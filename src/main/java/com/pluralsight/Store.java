@@ -225,7 +225,13 @@ public class Store {
         }
     }
     public static Product findProductById(String id, ArrayList<Product> inventory) {
-        
+        for (Product product : inventory) {
+            if (product.getSku().equals(id)) {
+                return product;
+            }
+        }
+        return null;
+
         // This method should search the inventory ArrayList for a product with
         // the specified ID, and return the corresponding com.pluralsight.Product object. If
         // no product with the specified ID is found, the method should return
