@@ -136,6 +136,34 @@ public class Store {
     }
 
     public static void displayCart(ArrayList<Product> cart, Scanner scanner, double totalAmount) {
+        if (cart.isEmpty()) {
+            System.out.println("Your cart is empty.");
+            return;
+        }
+
+        System.out.println("Your Cart:");
+        totalAmount = 0.0;
+        for (Product product : cart) {
+            System.out.println(product);
+            totalAmount += product.getPrice();
+        }
+
+        System.out.printf("Total Amount: $%.2f%n", totalAmount);
+        System.out.println("Enter SKU to remove item, or 'checkout' to proceed to checkout, or 'back' to return:");
+
+        String input = scanner.nextLine();
+
+        if (input.equals("checkout")) {
+            checkOut(cart, totalAmount);
+        } else if (!input.equals("back")) {
+            Product selectedProduct = findProductById(input, cart);
+            if (selectedProduct != null) {
+                cart.remove(selectedProduct);
+                System.out.println(selectedProduct.getName() + " removed from cart.");
+            } else {
+                System.out.println("Product not found in cart.");
+            }
+        }
         // This method should display the items in the cart ArrayList, along
         // with the total cost of all items in the cart. The method should
         // prompt the user to remove items from their cart by entering the ID
