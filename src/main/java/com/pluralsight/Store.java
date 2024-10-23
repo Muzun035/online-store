@@ -76,6 +76,58 @@ public class Store {
     }
 
     public static void displayProducts(ArrayList<Product> inventory, ArrayList<Product> cart, Scanner scanner) {
+        System.out.println("How would you like to filter products?");
+        System.out.println("1. By Name");
+        System.out.println("2. By Price");
+        System.out.println("3. By Department");
+        System.out.println("4. Show All");
+
+        int filterChoice = scanner.nextInt();
+        scanner.nextLine();
+
+        ArrayList<Product> filteredProducts = new ArrayList<>(inventory);
+
+        switch (filterChoice) {
+            case 1:
+                System.out.println("Enter product name to search:");
+                String name = scanner.nextLine().toLowerCase();
+                filteredProducts.removeIf(product -> !product.getName().toLowerCase().contains(name));
+                break;
+            case 2:
+                System.out.println("Enter maximum price:");
+                double price = scanner.nextDouble();
+                scanner.nextLine();
+                filteredProducts.removeIf(product -> product.getPrice() > price);
+                break;
+            case 3:
+                System.out.println("Enter department to search:");
+                String department = scanner.nextLine().toLowerCase();
+                filteredProducts.removeIf(product -> !product.getDepartment().toLowerCase().contains(department));
+                break;
+            case 4:
+                break; // Show all products (no filtering)
+            default:
+                System.out.println("Invalid filter choice. Showing all products.");
+        }
+
+        System.out.println("Available Products:");
+        for (Product product : filteredProducts) {
+            System.out.println(product);
+        }
+
+        System.out.println("Enter the SKU of the product to add to cart, or 'back' to return:");
+        String input = scanner.nextLine();
+
+        if (!input.equals("back")) {
+            Product selectedProduct = findProductById(input, filteredProducts);
+            if (selectedProduct != null) {
+                cart.add(selectedProduct);
+                System.out.println(selectedProduct.getName() + " added to cart.");
+            } else {
+                System.out.println("Product not found.");
+            }
+        }
+
         // This method should display a list of products from the inventory,
         // and prompt the user to add items to their cart. The method should
         // prompt the user to enter the ID of the product they want to add to
