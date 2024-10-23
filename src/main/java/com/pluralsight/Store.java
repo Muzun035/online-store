@@ -1,8 +1,8 @@
 package com.pluralsight;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -172,13 +172,60 @@ public class Store {
     }
 
     public static void checkOut(ArrayList<Product> cart, double totalAmount) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.printf("Total Amount: $%.2f. Please enter payment amount: ", totalAmount);
+        double payment = scanner.nextDouble();
+
+        if (payment >= totalAmount) {
+            double change = payment - totalAmount;
+            System.out.printf("Payment successful! Change: $%.2f%n", change);
+            generateReceipt(cart, totalAmount, payment, change);
+            cart.clear();
+        } else {
+            System.out.println("Insufficient funds. Returning to cart.");
+        }
         // This method should calculate the total cost of all items in the cart,
         // and display a summary of the purchase to the user. The method should
         // prompt the user to confirm the purchase, and deduct the total cost
         // from their account if they confirm.
     }
 
+    public static void generateReceipt(ArrayList<Product> cart, double totalAmount, double payment, double change) {
+        System.out.println("Sales Receipt:");
+        System.out.println("Order Date: " + LocalDateTime.now());
+        for (Product product : cart) {
+            System.out.println(product);
+        }
+        System.out.printf("Total: $%.2f | Paid: $%.2f | Change: $%.2f%n", totalAmount, payment, change);
+        saveReceiptToFile(cart, totalAmount, payment, change);
+    }
+
+    public static void saveReceiptToFile(ArrayList<Product> cart, double totalAmount, double payment, double change) {
+        try {
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+            String timestamp = dtf.format(LocalDateTime.now());
+            File directory = new File("Receipts");
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+
+            File receiptFile = new File(directory, timestamp + ".txt");
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(receiptFile))) {
+                writer.write("Sales Receipt:\n");
+                writer.write("Order Date: " + LocalDateTime.now() + "\n");
+                for (Product product : cart) {
+                    writer.write(product + "\n");
+                }
+                writer.write(String.format("Total: $%.2f | Paid: $%.2f | Change: $%.2f%n", totalAmount, payment, change));
+            }
+
+            System.out.println("Receipt saved to " + receiptFile.getPath());
+        } catch (IOException e) {
+            System.out.println("Error writing receipt to file: " + e.getMessage());
+        }
+    }
     public static Product findProductById(String id, ArrayList<Product> inventory) {
+        
         // This method should search the inventory ArrayList for a product with
         // the specified ID, and return the corresponding com.pluralsight.Product object. If
         // no product with the specified ID is found, the method should return
