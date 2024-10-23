@@ -23,7 +23,7 @@ public class Store {
 
         // Display menu and get user choice until they choose to exit
         while (choice != 3) {
-            System.out.println("Welcome to the Online com.pluralsight.Store!");
+            System.out.println("Welcome to the Online Store!");
             System.out.println("1. Show Products");
             System.out.println("2. Show Cart");
             System.out.println("3. Exit");
@@ -54,15 +54,24 @@ public class Store {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split("\\|");
-                String sku = values[0];
-                String name = values[1];
-                double price = Double.parseDouble(values[2]);
-                String department = values[3];
-                Product product = new Product(sku, name, price, department);
-                inventory.add(product);
+                // Ensure that the line has exactly 3 fields
+                if (values.length == 3) {
+                    String sku = values[0];
+                    String name = values[1];
+                    double price = Double.parseDouble(values[2]);
+
+                    // Create a new Product object and add it to the inventory
+                    Product product = new Product(sku, name, price);
+                    inventory.add(product);
+                } else {
+                    // Handle lines with missing or extra fields
+                    System.out.println("Skipping invalid line: " + line);
+                }
             }
         } catch (IOException e) {
             System.out.println("Error loading inventory: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.out.println("Error parsing price: " + e.getMessage());
         }
 
         // This method should read a CSV file with product information and
@@ -79,8 +88,7 @@ public class Store {
         System.out.println("How would you like to filter products?");
         System.out.println("1. By Name");
         System.out.println("2. By Price");
-        System.out.println("3. By Department");
-        System.out.println("4. Show All");
+        System.out.println("3. Show All");
 
         int filterChoice = scanner.nextInt();
         scanner.nextLine();
@@ -100,11 +108,6 @@ public class Store {
                 filteredProducts.removeIf(product -> product.getPrice() > price);
                 break;
             case 3:
-                System.out.println("Enter department to search:");
-                String department = scanner.nextLine().toLowerCase();
-                filteredProducts.removeIf(product -> !product.getDepartment().toLowerCase().contains(department));
-                break;
-            case 4:
                 break; // Show all products (no filtering)
             default:
                 System.out.println("Invalid filter choice. Showing all products.");

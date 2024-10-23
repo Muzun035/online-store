@@ -56,9 +56,9 @@ Follow these steps to get your application running within IntelliJ IDEA:
 - **Maven**: For managing dependencies and building the project.
 
 ## Demo
-
-![Application Screenshot](path/to/your/screenshot.png)
-
+![t0zxprjc.4si.png](t0zxprjc.4si.png)
+![ny3nw0nf.w0n.png](ny3nw0nf.w0n.png)
+![l1l2gdeu.okd.png](l1l2gdeu.okd.png)
 (Optional: Record a GIF or take screenshots of key functionalities such as product listing, adding/removing items to/from the cart, and checkout.)
 
 ## Future Work
